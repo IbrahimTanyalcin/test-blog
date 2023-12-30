@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-blog</title>
+
+    <meta name="description" content="test-blog">
+    <!-- Schema.org for Google -->
+    <meta itemprop="name" content="test-blog">
+    <meta itemprop="description" content="test-blog">
+    <meta itemprop="image" content="static/logo/logo.png">
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="test-blog">
+    <meta name="twitter:description" content="test-blog">
+    <meta name="twitter:image:src" content="static/logo/logo.png">
+    <!-- Open Graph for Facebook & LinkedIn -->
+    <meta property="og:title" content="test-blog">
+    <meta property="og:description" content="test-blog">
+    <meta property="og:image" content="static/logo/logo.png">
+    <meta property="og:url" content="https://github.com/IbrahimTanyalcin/test-blog">
+    <meta property="og:site_name" content="test-blog">
+    <meta property="og:type" content="website">
+
+    <link rel="preload" href="static/fonts/Basmala.ttf" as="font" crossorigin>
+    <link rel="preload" href="static/fonts/Geist-Regular.woff2" as="font" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'arabic-large';
+            src: url('static/fonts/Basmala.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'geist-regular';
+            src: url('static/fonts/Geist-Regular.woff2') format('woff2'),
+                 url('static/fonts/Geist-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        :root {
+            --hl-color: #ddddeeee;
+            --font-family-base: "Inter var", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            height: 100%;
+            font-family: 'geist-regular', var(--font-family-base);
+        }
+        body {
+            position: relative;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            flex-wrap: wrap;
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            font-family: inherit;
+            background-image: url('static/img/bg.png');
+            background-position: center center; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed; 
+            background-size: 100% 100%; 
+            -webkit-background-size: 100% 100%; 
+            -moz-background-size: 100% 100%; 
+            -o-background-size: 100% 100%; 
+        }
+        * {
+            box-sizing: border-box;
+        }
+        .pharag {
+            background-color: transparent;
+            font-size: clamp(16px, 1rem, 32px);
+        }
+        :is(h1, h2) + .pharag::first-letter {
+            font-size: 4rem;
+            text-transform: uppercase;
+            font-family: "arabic-large";
+        }
+        details summary {
+            list-style: none;
+        }
+        details div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+        }
+        details pre {
+            width: 80vw;
+            height: 80vh;
+        }
+    </style>
+</head>
+<script src="static/js/cahir.0.0.6.evergreen.umd.js"></script>
+    <body>
+        <h1>BASLIK</h1>
+        <div class="pharag">Bu bir test cumlesi.</div>
+        <script src="static/js/ch.js"></script>
+        <script src="static/js/app.js"></script>
+    </body>
+</html>
