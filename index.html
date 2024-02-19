@@ -26,7 +26,11 @@
 
     <link rel="preload" href="static/fonts/Basmala.ttf" as="font" crossorigin>
     <link rel="preload" href="static/fonts/Geist-Regular.woff2" as="font" crossorigin>
+    <link rel="stylesheet" href="static/css/switch.css"/>
+    <link rel="stylesheet" href="static/css/fontawesome.css"/>
+    <!-- <link rel="inactive-stylesheet" href="static/css/sweetalert-dark.css"/> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css"/>
+    <link rel="stylesheet" href="static/css/prism.css"/>
     <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
     <style>
         @font-face {
@@ -43,39 +47,120 @@
             font-style: normal;
         }
         :root {
+            --font-color: #787878;
+            --font-color-light: #e1e1ff;
+            --page-color: #eeefff;
+            --loader-color: #aa7722;
+            --bg-color: #d0d5ee;
+            --bg-color-transparent: #d0d5ee25;
+            --bg-color-less-transparent:#d0d5eedd;
+            --bg-color-2: #afbfdf;
+            --bg-color-3: #888;
+            --bg-color-3-transparent: #8888;
             --hl-color: #ddddeeee;
             --font-family-base: "Inter var", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            --font-size: 28;
+            --border-image-ver-width: 3rem;
+            --border-image-hor-width: 7rem;
+            --border-image-ver-offset: 0.5rem;
+            --border-image-hor-offset: 4rem;
+            --border-image-ver-effective-width: calc(var(--border-image-ver-width) - var(--border-image-ver-offset));
+            --border-image-hor-effective-width: calc(var(--border-image-hor-width) - var(--border-image-hor-offset));
+            --main-container-hor-pad: 1rem;
+            --main-container-width: calc(100% - calc(2 * var(--border-image-hor-effective-width)) - var(--main-container-hor-pad));
+            --min-master-width: 280px;
+            --min-master-effective-width: calc(var(--min-master-width) - var(--border-image-hor-effective-width));
+            --main-container-effective-width: clamp(var(--min-master-width), var(--main-container-width), 98vw);
+            --backlight-hor-inset: var(--border-image-hor-effective-width);
+            --backlight-ver-inset: var(--border-image-ver-effective-width);
+            --backlight-color: hsl(200 80% 70% /1);
             height: 100%;
             font-family: 'geist-regular', var(--font-family-base);
+            /* color-scheme: light dark; */ /* both supported */
+        }
+        :root[data-theme="dark"] {
+            --font-color: #e1e1ff;
+            --font-color-light: #e1e1ff;
+            --page-color: #202030;
+            --bg-color: #303045;
+            --bg-color-transparent: #30304525;
+            --bg-color-2: #505070;
+            --bg-color-3: #8080a0;
+            --bg-color-3-transparent: #8080a088;
+            /* color-scheme: light dark; */ /* both supported */
+        }
+        /* uncomment below to turn on backlighting */
+        /* body:before {
+            display: block;
+            position: absolute;
+            inset:0;
+            pointer-events: none;
+            content: '';
+            opacity: 0;
+            transition: opacity 1s ease;
+            z-index: -2;
+            background: linear-gradient(to right, var(--backlight-color) 0%, transparent var(--backlight-hor-inset), transparent 100%), linear-gradient(to bottom, var(--backlight-color) 0%, transparent var(--backlight-ver-inset), transparent 100%), linear-gradient(to left, var(--backlight-color) 0%, transparent var(--backlight-hor-inset), transparent 100%), linear-gradient(to top, var(--backlight-color) 0%, transparent var(--backlight-ver-inset), transparent 100%);
+        }
+        :root[data-theme="dark"] body:before {
+            opacity: 0.9;
+        } */
+        body:after {
+            display: block;
+            position: absolute;
+            inset:0;
+            pointer-events: none;
+            content: '';
+            /* depending on the background, choose one below*/
+            /* border-image: url(static/img/border.png) 30% 40% / 3rem 7rem / 0.5rem 4rem round; */
+            border-image: url(static/img/border.png) 3% 3% / 3rem 7rem / 0.5rem 4rem round;
+            opacity: 0.9;
+            transition: opacity 1s ease;
+            z-index: -1;
+            /* can degrade performance in svg backgrounds */
+            /* mix-blend-mode: difference; */
+        }
+        :root[data-theme="dark"] body:after {
+            opacity: 0.4;
+            /* can degrade performance in svg backgrounds */
+            /* mix-blend-mode: color-burn; */
         }
         body {
             position: relative;
             display:flex;
             align-items: center;
-            justify-content: center;
+            justify-content: start;
             flex-direction: column;
             flex-wrap: wrap;
             width: 100%;
             min-height: 100vh;
             margin: 0;
             font-family: inherit;
-            background-image: url('static/img/bg.png');
+            /*background-image: url('static/img/bg.png');
             background-position: center center; 
             background-repeat: no-repeat; 
             background-attachment: fixed; 
-            background-size: 100% 100%; 
+            background-size: 100% 100%;
             -webkit-background-size: 100% 100%; 
             -moz-background-size: 100% 100%; 
-            -o-background-size: 100% 100%; 
+            -o-background-size: 100% 100%; */
+            /* border-image: url(static/img/border.png) 30% 40% / 3rem 7rem / 0.5rem 4rem round; put this on the pseudo element*/
+            color: var(--font-color);
+            background: var(--page-color);
+            transition: background 1s ease;
         }
         * {
             box-sizing: border-box;
         }
-        .pharag {
+        .text-container-1 {
+            --mobile: 0;
             background-color: transparent;
-            font-size: clamp(16px, 1rem, 32px);
+            /*font-size: clamp(4px, 1.4rem, 64px);*/
+            width: calc(max(var(--min-master-effective-width), 75vw));
+            font-size: calc(calc(var(--font-size) / calc(var(--mobile) + 1)) * 1px);
+            transition: color 1s ease;
+            text-align: initial;
         }
-        :is(h1, h2) + .pharag::first-letter {
+        .text-container-1 *:is(h1, h2) + *:not(:is(h1, h2))::first-letter {
             font-size: 4rem;
             text-transform: uppercase;
             font-family: "arabic-large";
@@ -99,13 +184,345 @@
             width: 80vw;
             height: 80vh;
         }
+        #main-container {
+            box-sizing: border-box;
+            margin: var(--border-image-ver-effective-width) var(--border-image-hor-effective-width);
+            width: var(--main-container-effective-width);
+            text-align: center;
+            /* font-family: var(--font-family-base); */
+            font-family: inherit;
+            text-wrap: balance;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            flex-wrap: wrap;
+            position: relative;
+            container: main-container;
+            container-type: inline-size;
+            min-height: 100vh;
+        }
+        #card-container-wrapper {
+            position: relative;
+            background: var(--page-color);
+        }
+        #card-container {
+            position: relative;
+            width: calc(max(var(--min-master-effective-width), 60vw));
+        }
+        #card-container:before {
+            display: block;
+            position: absolute;
+            inset:0;
+            pointer-events: none;
+            content: '';
+            background: var(--page-color);
+        }
+        #card-container:after {
+            display: block;
+            position: absolute;
+            inset:0;
+            pointer-events: none;
+            content: '';
+            background: url(static/img/border.png) center / cover no-repeat fixed;
+            /* depending on the background choose one below */
+            /* opacity: 0.1; */
+            opacity: 0.4;
+            mix-blend-mode: lighten;
+        }
+        :root[data-theme="dark"] #card-container:after {
+            mix-blend-mode: darken;
+        }
+        @container main-container (width < 920px) {
+            .text-container-1 {
+                --mobile: 1;
+                width: 100cqi;
+            }
+        }
+        @container main-container (width: 320px) or (width < 320px) {
+            #card-container {
+                /* width: var(--min-master-effective-width); */
+                width: var(--min-master-width);
+            }
+        }
+        #widget-container {
+            width: 100%;
+            padding: 0.5rem;
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        #svg-loader {
+            position: fixed;
+            inset: 0;
+            transition: opacity 0.25s ease;
+            opacity:1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #svg-loader svg {
+            width: 7.5vw;
+            height: auto;
+        }
+
+        #svg-loader path {
+            fill: transparent;
+            stroke: var(--loader-color);
+            stroke-width: 4;
+            stroke-opacity: 1;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+        }
+        /* FOOTER */
+        #footer-wrapper {
+            width: 100%;
+            container: footer-container;
+            container-type: inline-size;
+            /* margin-top: var(--outer-glow); */
+            margin-top: auto;
+            position: relative;
+            color: var(--font-color-light);
+        }
+        #footer-wrapper:before {
+            position: absolute;
+            content: '';
+            inset: 0;
+            pointer-events: none;
+            background: url(static/img/footer.png) center / cover no-repeat fixed;
+            display: block;
+            /* depends on the color palette */
+            /* transition: filter 1s ease;
+            filter: grayscale(1); */
+            opacity: 0.9;
+            transition: opacity 1s ease;
+            z-index: -9999;
+        }
+        :root[data-theme="dark"] #footer-wrapper:before {
+            /* some backgrounds go good w/ below */
+            /* filter: hue-rotate(225deg); */
+            opacity: 0.4;
+        }
+        .footer-grid-container {
+            box-sizing: border-box;
+            position: relative;
+            width: 100%;
+            height: 300px;
+            display: grid;
+            grid-template-columns: 1fr 4fr 4fr 1fr;
+            grid-template-rows: 1fr 5fr 1fr;
+            grid-template-areas:
+                "a b b c"
+                "a d d c"
+                "a e e c";
+        }
+        .footer-grid-container a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .footer-grid-area {
+            display: flex;
+            position: relative;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0.25rem;
+        }
+        .footer-grid-content {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0.25rem;
+            background: rgba(0, 0, 0, 0.5);
+            height: calc(100% - 0.5rem);
+            width: calc(100% + 0.5rem);
+            backdrop-filter: blur(4px);
+        }
+        .footer-grid-content > div {
+            display: inline-block;
+            overflow: hidden;
+            padding: 4px;
+            position: relative;
+            cursor: pointer;
+        }
+        .footer-grid-content > div:after {
+            position: absolute;
+            content: '';
+            display: block;
+            inset: 0px;
+            background: var(--backlight-color);
+            /* background: hsl(calc(var(--hue) + 150) 90% 80% / 0.9); */
+            mix-blend-mode: color-dodge;
+            transform: translate(0%, 100%);
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+        .footer-grid-content > div:hover:after {
+            transform: translate(0%, 0%);
+        }
+        @container footer-container (max-width: 380px) {
+            .footer-grid-container {
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: auto auto;
+                grid-template-areas:
+                "b b b b"
+                "d d d d"
+                "a a c c"
+                "e e e e";
+            }
+        }
+        /* FOOTER */
+        /* NAV */
+        #widget-container {
+            border-bottom: 2px solid var(--font-color);
+        }
+        #widget-container nav {
+            flex-grow: 1;
+            font-size: 1.2rem;
+        }
+        #widget-container i.fa {
+            font-size: 1.6rem;
+        }
+        #widget-container nav ul {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            list-style-type: none;
+            padding: 0;
+            cursor: pointer;
+        }
+        #widget-container div:has(div[name='theme-switch-container']) {
+            width: 100%;
+        }
+        div[name='theme-switch-container'] {
+            float: right;
+        }
+        nav ul {
+            flex-wrap: wrap;
+        }
+        nav, ul, li {
+            position: relative;
+        }
+        nav ul li {
+            display: inline-block;
+            overflow: hidden;
+            padding: 4px;
+        }
+        nav a {
+            text-decoration: none;
+            color: inherit;
+        }
+        nav ul li:after {
+            position: absolute;
+            content: '';
+            display: block;
+            inset: 0px;
+            background: var(--backlight-color);
+            /* background: hsl(calc(var(--hue) + 150) 90% 80% / 0.9); */
+            mix-blend-mode: color-dodge;
+            transform: translate(0%, 100%);
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+        nav ul li:hover:after {
+            transform: translate(0%, 0%);
+        }
+        /* NAV */
     </style>
 </head>
 <script src="static/js/cahir.0.0.6.evergreen.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/localforage/dist/localforage.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <body>
-        <h1>BASLIK</h1>
-        <div class="pharag">Bu bir test cumlesi.</div>
+        <div id="svg-loader"></div>
+        <div id="main-container">
+            <div id="widget-container">
+                <div>
+                    <div name="theme-switch-container">
+                        <i class="fa fa-sun-o"></i>
+                        <input type="checkbox" data-button-type="switch" id="theme-switch" />
+                        <label for="theme-switch" data-label-type="switch">Toggle</label>
+                        <i class="fa fa-moon-o"></i>
+                    </div>
+                </div>
+                <nav>
+                    <ul>
+                        <li id="data-refresh"><i class="fa fa-refresh"></i> Refresh </li>
+                        <li><a href="https://github.com/IbrahimTanyalcin/test-blog/issues" target="_blank" rel="noopener noreferrer"><i class="fa fa-comment"></i> Comment </a></li>
+                        <li><a href="https://github.com/IbrahimTanyalcin/test-blog/fork" target="_blank" rel="noopener noreferrer"><i class="fa fa-code-fork"></i> Fork </a></li>
+                        <li><a href="https://github.com/IbrahimTanyalcin/test-blog" target="_blank" rel="noopener noreferrer"><i class="fa fa-thumbs-up"></i> Like </a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="card-container-wrapper">
+                <div id="card-container"></div>
+            </div>
+            <div class="text-container-1"></div>
+            <div id="footer-wrapper">
+                <div class="footer-grid-container">
+                    <div class="footer-grid-area" style="grid-area: a; font-size: 2rem;">
+                        <div class="footer-grid-content" style="flex-direction: column; gap: 1rem;">
+                            <div><a href="https://github.com/IbrahimTanyalcin/test-blog" target="_blank" rel="noopener noreferrer"><i class="fa fa-github"></i></a></div>
+                            <div><a href="https://github.com/IbrahimTanyalcin/test-blog" target="_blank" rel="noopener noreferrer"><i class="fa fa-thumbs-up"></i></a></div>
+                            <div><a href="https://github.com/IbrahimTanyalcin/test-blog/fork" target="_blank" rel="noopener noreferrer"><i class="fa fa-code-fork"></i></a></div>
+                        </div>
+                    </div>
+                    <div class="footer-grid-area" style="grid-area: b;"></div>
+                    <div class="footer-grid-area" style="grid-area: c; font-size: 2rem;">
+                        <div class="footer-grid-content" style="flex-direction: column; gap: 1rem;">
+                            <div><a target="_blank" rel="noopener noreferrer"><i class="fa fa-twitter"></i></a></div>
+                            <div><a target="_blank" rel="noopener noreferrer"><i class="fa fa-instagram"></i></a></div>
+                            <div><a target="_blank" rel="noopener noreferrer"><i class="fa fa-reddit"></i></a></div>
+                        </div>
+                    </div>
+                    <div class="footer-grid-area" style="grid-area: d; font-size: 1.2rem;">
+                        <div class="footer-grid-content">
+                            <pre style="white-space: pre-wrap; font-family: inherit;">Lorem ipsum dolor sit amet, consectetur adipiscing elit    <i class="fa fa-copyright"></i> </pre>
+                        </div>
+                    </div>
+                    <div class="footer-grid-area" style="grid-area: e;"></div>
+                </div>
+            </div>
+        </div>
         <script src="static/js/ch.js"></script>
         <script src="static/js/app.js"></script>
+        <script>
+            /*ATTACH EVENT HANDLER ON THE SWITCH*/
+            ch`
+            -> ${document.getElementById('theme-switch')}
+            on change@theme ${() => (e) => {
+                const 
+                    self = e.currentTarget,
+                    root = document.documentElement;
+                self._dark = self._dark || ch(document.head)`
+                    +> ${ch.dom`<link rel="inactive-stylesheet" href="static/css/sweetalert-dark.css"/>
+                `}`.lastOp[0];
+                ch(root)`
+                satr data-theme ${root._theme = self.checked ? "dark" : "light"}
+                `(self._dark)`
+                satr rel ${root._theme === "dark" ? "stylesheet" : "inactive-stylesheet"}`;
+            }}
+            `
+            /* GLOW EFFECT */
+            document.body.addEventListener("pointermove", ch.throttle(function({clientX:x, clientY: y}){
+                document.documentElement.style.setProperty("--x", x + "px");
+                document.documentElement.style.setProperty("--y", y + "px");
+                let t = Math.max(0, Math.min(x / document.documentElement.clientWidth, 1)),
+                    hue = (document.documentElement._theme === "dark" ? 140 : 0) + t * 140 | 0;
+                document.documentElement.style.setProperty("--hue", hue);
+            }, {thisArg: document.body, delay: 9}));
+        </script>
+        <script src="/static/js/sweetalert2@11.4.7.js" async></script>
+        <script src="static/js/prism.js" data-manual async></script>
     </body>
 </html>

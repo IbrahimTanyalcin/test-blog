@@ -1,0 +1,58 @@
+[name=theme-switch-container] {
+	--size: 50px;
+	/* position: absolute;
+	top: calc(var(--size) / 4);
+	right: calc(var(--size) / 2);
+	top:6px;
+	right: 8px; */
+	margin-left: auto; /* pushes the item to the right */
+	display: flex;
+	align-content: center;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.8rem;
+	color: var(--font-color);
+}
+
+input[type=checkbox][data-button-type=switch]{
+	height: 0;
+	width: 0;
+	visibility: hidden;
+}
+
+label[data-label-type=switch] {
+	cursor: pointer;
+	text-indent: -9999px;
+	width: var(--size);
+	height: calc(var(--size) / 2);
+	background: var(--bg-color);
+	display: block;
+	border-radius: calc(var(--size) / 2);
+	position: relative;
+}
+
+label[data-label-type=switch]:after {
+	--size: 50px;
+	content: '';
+	position: absolute;
+	top: calc(var(--size) / 20);
+	left: calc(var(--size) / 20);
+	width: calc(var(--size) * 8 / 20);
+	height: calc(var(--size) * 8 / 20);
+	background: var(--page-color);
+	border-radius: calc(var(--size) * 8 / 20);
+	transition: 0.3s;
+}
+
+input[data-button-type=switch]:checked + label[data-label-type=switch] {
+	background: var(--bg-color-3);
+}
+
+input[data-button-type=switch]:checked + label[data-label-type=switch]:after {
+	left: calc(100% - calc(var(--size) / 20));
+	transform: translateX(-100%);
+}
+
+label[data-label-type=switch]:active:after {
+	width: calc(var(--size) * 13 / 20);
+}
