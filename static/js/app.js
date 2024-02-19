@@ -146,8 +146,8 @@
             if(!result.isConfirmed){
                 return this._busy = false;
             }
-            console.log(`Cleared cache: ${(new Date()).toUTCString()}`);
             await v.cache.clear();
+            console.log(`Cleared cache: ${(new Date()).toUTCString()}`);
             return this._busy = false;
         })
     }}

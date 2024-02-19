@@ -29,7 +29,8 @@ Object.defineProperties(
     }
 )
 prt.getDataFromHash = async function(_hash) {
-    await this.cache.clear();
+    /* force refresh */
+    /* await this.cache.clear(); */
     let hash = _hash || this.currentHash,
         content = await this.cache.getItem(hash);
     if (!content) {
