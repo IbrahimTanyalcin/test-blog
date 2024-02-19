@@ -65,6 +65,9 @@ function renderStyles(values){
             font-size: 3rem;
             text-transform: uppercase;
         }
+        game-card {
+            contain: layout style;
+        }
         game-card *:is(h1, h2, h3) {
             margin: 0;
         }
@@ -82,6 +85,7 @@ function renderStyles(values){
             game-card {
                 padding: 0.125rem 0rem !important;
                 margin: ${values.itemMarginSmall}px !important;
+                --use-small-margin: 1;
             }
             game-card > div:first-child {
                 height: ${values.cardHeightSmall} !important;

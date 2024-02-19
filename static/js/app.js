@@ -70,8 +70,11 @@
         -> ${values.cont}
         => ${() => () => {
             if (!values.data.length){return}
-            values.dims = values.weakmap.get(values.data[0])
-                .getBoundingClientRect();
+            const firstCard = values.weakmap.get(values.data[0]);
+            values.currentItemMargin = +getComputedStyle(firstCard)
+            .getPropertyValue("--use-small-margin")
+                ? values.itemMarginSmall : values.itemMargin;
+            values.dims = firstCard.getBoundingClientRect();
             values.children = Array.from(values.cont.children);
         }}
         &> ${() => (n,i,c) => {
@@ -90,7 +93,7 @@
                 ch.animate([
                     {
                         transform: `translate(0px, ${
-                            iDiff * (values.dims.height + values.itemMargin)
+                            iDiff * (values.dims.height + values.currentItemMargin)
                         }px)`
                     }
                 ],{duration:1000, easing: "ease-in-out", fill: "both"})
