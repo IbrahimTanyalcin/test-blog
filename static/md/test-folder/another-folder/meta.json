@@ -1,0 +1,7 @@
+{
+  "codesample.md": {
+    "content": "This should be a code sample.",
+    "type": "Codesample",
+    "img": "custom-image.png"
+  }
+}
