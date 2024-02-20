@@ -40,6 +40,7 @@ That's it.
 - SimpleBar to render long custom directory/file notes
 - Fontawesome
 - SweetAlert2
+- Dark/Light Themes
 
 ## Customization 🎨
 Since test-blog renders folders/files as 'cards', you can customize what writes on these cards via optionally including `meta.json` in a directory. Each `meta.json` provides optional info about the files in that folder, much like the good old `.htaccess`: 

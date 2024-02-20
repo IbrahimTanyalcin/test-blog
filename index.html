@@ -518,6 +518,15 @@
                 satr data-theme ${root._theme = self.checked ? "dark" : "light"}
                 `(self._dark)`
                 satr rel ${root._theme === "dark" ? "stylesheet" : "inactive-stylesheet"}`;
+                let utterences = ch.until(
+                    () => document.querySelector('.utterances-frame'),
+                    {interval: 250}
+                ).lastOp;
+                utterences.then(frame => frame?.contentWindow?.postMessage({
+                    type: "set-theme",
+                    theme: `github-${root._theme}`
+                }, "https://utteranc.es"));
+                setTimeout(() => {utterences.break()}, 3000);
             }}
             `
             /* GLOW EFFECT */
