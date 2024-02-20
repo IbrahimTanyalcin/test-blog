@@ -63,3 +63,8 @@ You can use either the *English* or the *Turkish* (in parantheses below) key nam
 | type (tip)    | *Series* for folders, *Article* for files | Controls the header
 | name (isim)       | Name of the file | Controls the sub header
 | img (resim) | A random image selected from `bg-card/dirs` or `bg-card/files` | Controls the image on the right of the card
+
+## Credits
+- *Gwent: The Witcher Card Game* sprites from **CD Projekt RED**.
+- The sprites are taken from https://gwent.one/
+- https://codepen.io/nikhil8krishnan/pen/rVoXJa for the loader `svg`
