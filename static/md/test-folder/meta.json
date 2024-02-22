@@ -4,5 +4,8 @@
   },
   "some_script.js": {
     "mode": "src" 
+  },
+  "another-folder": {
+    "ttl": 100000
   }
 }
