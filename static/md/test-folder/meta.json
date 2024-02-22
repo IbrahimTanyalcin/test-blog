@@ -2,7 +2,7 @@
   "lorem-ipsum-3.md": {
     "icerik": "a2b2c2"
   },
-  "some-script.js": {
+  "some_script.js": {
     "mode": "src" 
   }
 }
