@@ -1,0 +1,4 @@
+And this should be a simple text wrapped in a:
+**<pre>...</pre>** block
+So w   h   i   t   e  
+s    p   a   c   e   s are respected.
