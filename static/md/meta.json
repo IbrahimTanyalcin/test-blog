@@ -3,5 +3,8 @@
     "tip": "Non-standard type",
     "isim": "Custom name",
     "content": "This is a custom content that can be mofified via meta.json!!!. It can span multiple sentences and will be broken down accordingly."
+  },
+  "test-folder": {
+    "order": 1
   }
 }
