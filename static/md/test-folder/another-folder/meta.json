@@ -3,5 +3,9 @@
     "content": "This should be a code sample.",
     "type": "Codesample",
     "img": "custom-image.png"
+  },
+  "svg_example.svg": {
+    "content": "This is an svg file. To render them correctly, set the `mode` to `xml` in `meta.json`",
+    "mode": "xml"
   }
 }
