@@ -45,7 +45,9 @@
         }}
         -> ${values.cont}
         => ${() => () => values.data.sort(
-            (a, b) => values.comparer.en(a?.["name"],b?.["name"])
+            (a, b) => (values?.meta[b?.["name"]]?.order || 0)
+                - (values?.meta[a?.["name"]]?.order || 0)
+                || values.comparer.en(a?.["name"],b?.["name"])
         )}
         => ${() => () => {
             values.data.filter(d => {

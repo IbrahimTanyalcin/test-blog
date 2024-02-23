@@ -38,7 +38,7 @@ prt.getDataFromHash = async function(_hash) {
         content = await fetch(this.route, {
             headers: {...(this.token ? {Authorization: `Bearer ${this.token}`} : {})}
         }).then(res => res.json());
-        await this.cache.setItem(hash, content);
+        await this.cache.setItem(hash, content, this.values?.meta?.[hash.split("/").pop()]?.ttl);
     }
    return content;
 }
@@ -120,7 +120,23 @@ prt.renderDataFromHash = async function() {
                     [{opacity: 1}],
                     {duration: 250, ease: "ease-in-out", fill: "both"}
                 )
-                this.values.textContainerOne.innerHTML = marked.parse(atob(data.content));
+                switch(this.values.meta[data.name]?.mode) {
+                    case "src":
+                        this.values.textContainerOne.replaceChildren();
+                        ch(ch.script)`>> textContent ${atob(data.content)} +< ${this.values.textContainerOne}`;
+                        break;
+                    case "xml":
+                        this.values.textContainerOne.innerHTML = atob(data.content);
+                        break;
+                    case "txt":
+                        this.values.textContainerOne.replaceChildren();
+                        ch(ch[`pre{
+                            "style":[["white-space", "pre-wrap"]]
+                        }`])`>> textContent ${atob(data.content)} +< ${this.values.textContainerOne}`;
+                        break;
+                    default:
+                        this.values.textContainerOne.innerHTML = marked.parse(atob(data.content));
+                }
                 Prism && Array.from(this.values.textContainerOne.querySelectorAll("code")).forEach(d => {
                     Prism.highlightElement(d);
                 })

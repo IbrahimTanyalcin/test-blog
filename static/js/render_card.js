@@ -17,7 +17,8 @@ function renderCard(values, d){
             img: getMeta("img", "dirs/" + ((Math.random() * 7 + 1) | 0)),
             border: "gold",
             amblem: "northern_realms",
-            rarity: "legendary"
+            rarity: "legendary",
+            icon: "folder"
         },
         file: {
             h2: getMeta("type", "Article"),
@@ -26,7 +27,8 @@ function renderCard(values, d){
             img: getMeta("img", "files/" + ((Math.random() * 5 + 1) | 0)),
             border: "bronze",
             amblem: "nilfgaard",
-            rarity: "common"
+            rarity: "common",
+            icon: "file"
         }
     },
     config = configs?.[d.type] ?? configs.file,
@@ -91,6 +93,7 @@ function renderCard(values, d){
             }" ${values.cardImageStyle}>
             <img src="static/img/card/border_${config.border}.png" ${values.cardImageStyle}>
             <img src="static/img/card/default_${config.amblem}.png" ${values.cardImageStyle}>
+            <img src="static/img/card/${config.icon}.png" ${values.cardImageStyle}>
             <img src="static/img/card/rarity_${config.rarity}.png" ${values.cardImageStyle}>
         </div>
     `

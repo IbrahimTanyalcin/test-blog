@@ -63,6 +63,9 @@ You can use either the *English* or the *Turkish* (in parantheses below) key nam
 | type (tip)    | *Series* for folders, *Article* for files | Controls the header
 | name (isim)       | Name of the file | Controls the sub header
 | img (resim) | A random image selected from `bg-card/dirs` or `bg-card/files` | Controls the image on the right of the card
+| order | 0 | Controls the order of items displayed
+| ttl | 900000 | Controls Time-To-Live for caching in milliseconds
+| mode | undefined | Default value uses `marked` to parse mardown. `src` is for executing scripts, `xml` is for dealing with `svg`, `html`, and `txt` is for plain text with `<pre>` formatting.
 
 ## Credits
 - *Gwent: The Witcher Card Game* sprites from **CD Projekt RED**.
