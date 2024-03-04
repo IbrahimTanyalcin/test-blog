@@ -1,18 +1,31 @@
+import rsaOaep from "./rsa-oaep.js";
 function hashRender ({aref, cache, values}) {
     const that = this;
     this.root = "https://api.github.com/repos/IbrahimTanyalcin/test-blog/contents/static/md/";
     this.values = values;
     this.aref = aref;
     this.cache = cache;
-    this.token = "";
+    this.token = ``;
+    this.decrypt = false;
+    this.decryptBusy = false;
+    this.rsaOaep = null;
     this.meta = d => d?.name === "meta.json";
+    this.textDecoder = new TextDecoder('utf-8');
     (window || self).addEventListener("hashchange", function(){
         that.renderDataFromHash();
     })
 }
 const 
     prt = hashRender.prototype,
-    atob = (window || self)?.atob;
+    atob = (window || self)?.atob,
+    trimWs = (s) => s.replace(/\s*/g,""),
+    trimHeader = (s) => s.replace(/-----(?:BEGIN|END) PRIVATE KEY-----/gi, ""),
+    privKeyPH = `
+        -----BEGIN PRIVATE KEY-----
+        ..........
+        ..........
+        -----END PRIVATE KEY-----
+    `.replace(/^\s*/gim, "");
 Object.defineProperties(
     prt,
     {
@@ -28,6 +41,103 @@ Object.defineProperties(
         }
     }
 )
+prt.atou = function(payload) {
+    return this.textDecoder.decode(
+        Uint8Array.from(atob(payload), d => d.charCodeAt(0))
+    )
+}
+prt.decryptPAT = async function(msg) {
+    try {
+        if(!this.decrypt || !this.token){return}
+        const that = this;
+        await ch.until(() => Swal).lastOp;
+        await ch.until(() => !that.decryptBusy).lastOp;
+        this.decryptBusy = true;
+        this.rsaOaep = this.rsaOaep || new rsaOaep();
+        this.enableDragNDrop();
+        const result = await Swal.fire({
+            icon: "warning",
+            title: "Authorized Content",
+            input: "textarea",
+            inputLabel: msg || "Insert or drag&drop your private key",
+            inputPlaceholder: privKeyPH,
+            inputAttributes: {
+                "aria-label": "Your privkey here..."
+            },
+            showCancelButton:false,
+            showCloseButton: false,
+            showDenyButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        if(!result.isConfirmed || /^\s*$/.test(result.value)){
+            this.decryptBusy = false;
+            return this.decryptPAT("You have not provided any key");
+        }
+        const privKey = await this.rsaOaep.importPrivateKey(result.value, (s) => trimWs(trimHeader(s)));
+        this.token = await this.rsaOaep.decryptData(privKey, this.token, trimWs);
+        /* console.log("token is:", this.token); */
+        this.decryptBusy = false;
+        this.decrypt = false;
+    } catch (err) {
+        this.decryptBusy = false;
+        return this.decryptPAT(err.message)
+    }
+}
+prt.decryptDecodedContent = async function(content, msg) {
+    try {
+        const that = this;
+        await ch.until(() => Swal).lastOp;
+        await ch.until(() => !that.decryptBusy).lastOp;
+        this.decryptBusy = true;
+        this.rsaOaep = this.rsaOaep || new rsaOaep();
+        this.enableDragNDrop();
+        const result = await Swal.fire({
+            icon: "warning",
+            title: "Authorized Content",
+            input: "textarea",
+            inputLabel: msg || "Insert or drag&drop your private key",
+            inputPlaceholder: privKeyPH,
+            inputAttributes: {
+                "aria-label": "Your privkey here..."
+            }
+        });
+        if(result.isDismissed) {
+            this.decryptBusy = false;
+            return new Error("Abort rendering.")
+        } else if (/^\s*$/.test(result.value)){
+            this.decryptBusy = false;
+            return this.decryptDecodedContent(content, "You have not provided any key");
+        }
+        const privKey = await this.rsaOaep.importPrivateKey(result.value, (s) => trimWs(trimHeader(s)));
+        const decryptedContent = await this.rsaOaep.decryptData(privKey, content, trimWs);
+        this.decryptBusy = false;
+        return decryptedContent;
+    } catch (err) {
+        this.decryptBusy = false;
+        return this.decryptDecodedContent(content, err.message)
+    }
+}
+prt.enableDragNDrop = async function() {
+    const tArea = await ch.until(() => document.querySelector(".swal2-container textarea")).lastOp;
+    tArea.addEventListener("drop", function(e){
+        e.preventDefault();
+        const 
+            dT = e.dataTransfer,
+            file = dT?.items?.filter?.(d => d.kind === "file").map(file => file.getAsFile())[0]
+                ?? dT?.files[0],
+            reader = new FileReader();
+        reader.onload = function(e){
+            dT?.items?.clear?.();
+            dT?.clearData?.();
+            tArea.value = this.result;
+        };
+        reader.onerror = function(err){
+            throw(err?.message || err?.error?.message);
+        };
+        reader.readAsText(file,"UTF-8");
+    })
+}
 prt.getDataFromHash = async function(_hash) {
     /* force refresh */
     /* await this.cache.clear(); */
@@ -50,7 +160,7 @@ prt.getMetaDataFromHref = async function (uri) {
         content = await this.cache.getItem(hash);
     if (content) {
        /*  serving from cache */
-        return JSON.parse(atob(content.content));
+        return JSON.parse(this.atou(content.content));
     }
     try {
         response = await fetch(href, {
@@ -59,13 +169,16 @@ prt.getMetaDataFromHref = async function (uri) {
         if (!response.ok){throw new Error("Could not get metadata")}
         content = await response.json();
         await this.cache.setItem(hash, content);
-        return JSON.parse(atob(content.content));
+        return JSON.parse(this.atou(content.content));
     } catch {
         await this.cache.setItem(hash, {content: 'e30='});
         return {};
     }
 }
 prt.renderDataFromHash = async function() {
+    if(this.decrypt && this.token){
+        await this.decryptPAT();
+    }
     let data = await this.getDataFromHash();
     switch (true) {
         case data instanceof Array:
@@ -115,6 +228,12 @@ prt.renderDataFromHash = async function() {
                 await ch.until(() => {
                     return this.values.textContainerOne._contentReady
                 }).lastOp;
+                let decodedContent = this.atou(data.content),
+                    initialHash = this.currentHash;
+                decodedContent = this.values.meta[data.name]?.decrypt
+                    ? await this.decryptDecodedContent(decodedContent)
+                    : decodedContent;
+                if (decodedContent instanceof Error || initialHash !== this.currentHash) {return}
                 ch(this.values.textContainerOne)
                 .animate(
                     [{opacity: 1}],
@@ -123,19 +242,19 @@ prt.renderDataFromHash = async function() {
                 switch(this.values.meta[data.name]?.mode) {
                     case "src":
                         this.values.textContainerOne.replaceChildren();
-                        ch(ch.script)`>> textContent ${atob(data.content)} +< ${this.values.textContainerOne}`;
+                        ch(ch.script)`>> textContent ${decodedContent} +< ${this.values.textContainerOne}`;
                         break;
                     case "xml":
-                        this.values.textContainerOne.innerHTML = atob(data.content);
+                        this.values.textContainerOne.innerHTML = decodedContent;
                         break;
                     case "txt":
                         this.values.textContainerOne.replaceChildren();
                         ch(ch[`pre{
                             "style":[["white-space", "pre-wrap"]]
-                        }`])`>> textContent ${atob(data.content)} +< ${this.values.textContainerOne}`;
+                        }`])`>> textContent ${decodedContent} +< ${this.values.textContainerOne}`;
                         break;
                     default:
-                        this.values.textContainerOne.innerHTML = marked.parse(atob(data.content));
+                        this.values.textContainerOne.innerHTML = marked.parse(decodedContent);
                 }
                 Prism && Array.from(this.values.textContainerOne.querySelectorAll("code")).forEach(d => {
                     Prism.highlightElement(d);

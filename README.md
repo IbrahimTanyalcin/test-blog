@@ -66,6 +66,53 @@ You can use either the *English* or the *Turkish* (in parantheses below) key nam
 | order | 0 | Controls the order of items displayed
 | ttl | 900000 | Controls Time-To-Live for caching in milliseconds
 | mode | undefined | Default value uses `marked` to parse mardown. `src` is for executing scripts, `xml` is for dealing with `svg`, `html`, and `txt` is for plain text with `<pre>` formatting.
+| decrypt | undefined | Setting it to true opens a dismissable pop-up where you can drag&drop your private key in `PEM` format. Read the encryption section for the details.
+
+## Encryption
+
+Whether you are using Github Pages publickly or in a private repository, you can use encryption when:
+
+- you want to use your `github_pat_...` token with Github API because you want to increase limits, or you are serving from private repo or you are using Github Enterprise.
+- you want to encrypt certain content.
+
+Both cases involve first generating a private key:
+```bash
+openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
+
+openssl rsa -pubout -in private_key.pem -out public_key.pem
+
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in private_key.pem -out private_key_pkcs8.pem -nocrypt
+```
+
+To encrypt data (this can be your github_pat token or an article you want to encrypt), let's call it `payload`:
+
+```bash
+echo -n "your payload" | openssl pkeyutl -encrypt -pubin -inkey public_key.pem -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -pkeyopt rsa_mgf1_md:sha256 | openssl base64 > encrypted_pat_base64.txt
+```
+
+You can replace `echo -n "your payload"` with `cat "your file"` if you want to encrypt a file content. Once you encrypted, you can do 2 things:
+
+1. If you encrypted your github_pat, then set in `hashRender.js`:
+```javascript
+this.token = `your encrypted value...`
+this.decrypt = true;
+```
+Above will trigger a pop up for the user to bring the private key. This is the `private_key_pkcs8.pem` from above. White spaces are headers are automatically removed, so you only need to drag and drop the private key file. The decription is done once and token is set to decrypted value.
+
+2. If you encrypted a file content, place this encrypted file as you normally would under any folder. Place a `meta.json` in the same folder if you haven't already and set:
+
+```json
+{
+  "encrypted.md": {
+    "decrypt": true
+  }
+}
+```
+
+Once `decrypt` is set to true, this will trigger a pop up window. If the user dismisses or enters wrong private key, no content is shown. Decryption takes place **before** `mode` takes effect. This means you can set `mode` to `src`, `xml` etc. Default assumes markdown.
+
+
+
 
 ## Credits
 - *Gwent: The Witcher Card Game* sprites from **CD Projekt RED**.
