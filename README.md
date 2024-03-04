@@ -70,9 +70,9 @@ You can use either the *English* or the *Turkish* (in parantheses below) key nam
 
 ## Encryption
 
-Whether you are using Github Pages publickly or in a private repository, you can use encryption when:
+Whether you are using GitHub Pages publicly or in a private repository, you can use encryption when:
 
-- you want to use your `github_pat_...` token with Github API because you want to increase limits, or you are serving from private repo or you are using Github Enterprise.
+- you want to use your `github_pat_...` token with GitHub API because you want to increase limits, or you are serving from private repo or you are using GitHub Enterprise.
 - you want to encrypt certain content.
 
 Both cases involve first generating a private key:
@@ -97,7 +97,7 @@ You can replace `echo -n "your payload"` with `cat "your file"` if you want to e
 this.token = `your encrypted value...`
 this.decrypt = true;
 ```
-Above will trigger a pop up for the user to bring the private key. This is the `private_key_pkcs8.pem` from above. White spaces are headers are automatically removed, so you only need to drag and drop the private key file. The decription is done once and token is set to decrypted value.
+Committing the above changes to your clone of the test-blog will trigger a popup prompting the user to upload the private key. This is the `private_key_pkcs8.pem` from above. White spaces and headers are automatically removed, so you only need to drag and drop the private key file. The decryption is done once and token is set to decrypted value.
 
 2. If you encrypted a file content, place this encrypted file as you normally would under any folder. Place a `meta.json` in the same folder if you haven't already and set:
 
@@ -109,9 +109,7 @@ Above will trigger a pop up for the user to bring the private key. This is the `
 }
 ```
 
-Once `decrypt` is set to true, this will trigger a pop up window. If the user dismisses or enters wrong private key, no content is shown. Decryption takes place **before** `mode` takes effect. This means you can set `mode` to `src`, `xml` etc. Default assumes markdown.
-
-
+Setting `decrypt` to true triggers a popup window. If the user dismisses it or enters an incorrect private key, no content will be shown. Decryption takes place **before** `mode` takes effect. This means you can set `mode` to `src`, `xml` etc. Default `mode` assumes markdown.
 
 
 ## Credits
