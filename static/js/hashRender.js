@@ -236,7 +236,7 @@ prt.renderDataFromHash = async function() {
                     ? await this.decryptDecodedContent(decodedContent)
                     : decodedContent;
                 if (decodedContent instanceof Error || initialHash !== this.currentHash) {return}
-                this.cssToggler.toggle(this.values.meta[data.name]?.css);
+                this.cssToggler.toggle(this.values.meta[data.name]?.css, 1);
                 ch(this.values.textContainerOne)
                 .animate(
                     [{opacity: 1}],
