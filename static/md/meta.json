@@ -6,5 +6,8 @@
   },
   "test-folder": {
     "order": 1
+  },
+  "lorem-ipsum-1.md": {
+    "css": ["static/css/lorem-ipsum-1.css", "static/css/custom.css"]
   }
 }
