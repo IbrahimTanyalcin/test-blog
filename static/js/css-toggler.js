@@ -46,27 +46,22 @@ prt.toggle = async function(srcs, onoff){
             {el,status} = obj;
         if (!el){
             el = await this.load(src);
-            console.log("adding, el is", el, "i is ", i);
             this.ledger.set(src, {el, status: 1});
             return el;
         }
-        console.log("getting to switch, i is",  i, "el is: ", el, "status is", status);
         switch(true) {
             case !!(onoff && !status):
             case !!(onoff ?? !status):
-                console.log("turn on ", el);
                 ch(el).satr("rel", "stylesheet");
                 obj.status = 1;
                 break;
             case !!(!onoff && status):
             case !!(onoff ?? status):
-                console.log("turn off ", el);
                 ch(el).satr("rel", "inactive-stylesheet");
                 obj.status = 0;
                 break;
             case !!(!onoff && !status):
             case !!(onoff && status):
-                console.log("do nothing for", el);
                 break;
             default:
                 throw new Error("stylesheet toggle error");
