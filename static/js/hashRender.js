@@ -14,7 +14,14 @@ function hashRender ({aref, cache, values}) {
     this.meta = d => d?.name === "meta.json";
     this.textDecoder = new TextDecoder('utf-8');
     (window || self).addEventListener("hashchange", function(){
-        that.renderDataFromHash();
+        try {
+            const hash = that.currentHash;
+            if(values.docEl.querySelector(`:is(#${hash}, [name=${hash}])`)){
+                return
+            } else {throw "Do routing"}
+        } catch {
+            that.renderDataFromHash();
+        }
     })
 }
 const 

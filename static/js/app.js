@@ -2,6 +2,7 @@
     ch`
     0> cacheGen:${await import("./stampForage.js")}
     0> hashRenderGen:${await import("./hashRender.js")}
+    @> docEl:${document.documentElement}
     @> body:${document.body}
     @> head:${document.head}
     0> textContainerOne:${document.querySelector(".text-container-1")}
