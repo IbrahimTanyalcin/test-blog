@@ -147,6 +147,25 @@ prt.enableDragNDrop = async function() {
         reader.readAsText(file,"UTF-8");
     })
 }
+prt.displayError = function(err){
+    return Swal.fire({
+        icon: "warning",
+        title: "Error",
+        text: `${err?.message || "fetch-error"}\nClick on refresh above, then revisit the page or a different route.`,
+        showCancelButton:true
+    })
+}
+prt.retryFetch = async function({route, trials = 1,err}){
+    if(!trials){throw new Error("route is unavailable or cannot be fetched.")}
+    return fetch(route, {
+        headers: {...(this.token ? {Authorization: `Bearer ${this.token}`} : {})}
+    }).then(res => {
+        if(!res.ok){
+            throw new Error("Response returned non 200-299 status")
+        }
+        return res.json()
+    }).catch(err => this.retryFetch({route, trials: --trials, err}))
+}
 prt.getDataFromHash = async function(_hash) {
     /* force refresh */
     /* await this.cache.clear(); */
@@ -156,7 +175,12 @@ prt.getDataFromHash = async function(_hash) {
         /* Not using cache */
         content = await fetch(this.route, {
             headers: {...(this.token ? {Authorization: `Bearer ${this.token}`} : {})}
-        }).then(res => res.json());
+        }).then(res => {
+            if(!res.ok){
+                throw new Error("Response returned non 200-299 status")
+            }
+            return res.json()
+        }).catch(err => this.retryFetch({route: this.route, err}));
         await this.cache.setItem(hash, content, this.values?.meta?.[hash.split("/").pop()]?.ttl);
     }
    return content;
@@ -188,7 +212,12 @@ prt.renderDataFromHash = async function() {
     if(this.decrypt && this.token){
         await this.decryptPAT();
     }
-    let data = await this.getDataFromHash();
+    let data;
+    try {
+        data = await this.getDataFromHash();
+    } catch (err) {
+        return this.displayError(err);
+    }
     switch (true) {
         case data instanceof Array:
             data = data.filter(d => !this.meta(d));
